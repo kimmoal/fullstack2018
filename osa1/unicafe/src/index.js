@@ -14,10 +14,27 @@ const Buttons = ({feedback, clickEvent}) => (
 )
 
 const Statistics = ({ feedback }) => {
+    let stats = []
+    let feedback_count = feedback.reduce((total, fb) => total + fb.counter, 0);
+
+    if (feedback_count <= 0) {
+        stats.push(<Statistic name='Ei palautteita annettu' value='' />);
+    } else {
+        stats.push(feedback.map(fb => <Statistic key={fb.label} name={fb.label} value={fb.counter} />));
+
+        let average = (feedback.reduce((total, fb) => total + fb.sign * fb.counter, 0.0) / feedback_count).toFixed(2);
+        let positive = (feedback.filter(fb => fb.sign > 0)
+            .reduce((total, fb) => total + fb.counter, 0) / feedback_count * 100).toFixed(1);
+
+        stats.push(<Statistic key='Keskiarvo' name='Keskiarvo' value={average} />);
+        stats.push(<Statistic key='Positiivisia' name='Positiivisia' value={positive + '%'} />);
+
+    }
+
     return (
         <table>
             <tbody>
-             { feedback.map(fb => <Statistic key={fb.label} name={fb.label} value={fb.counter} />) }
+                { stats }
             </tbody>
         </table>
     )
@@ -38,15 +55,18 @@ class Unicafe extends React.Component {
             feedback: [
                 {
                     label: 'Hyvä',
-                    counter: 0
+                    counter: 0,
+                    sign: 1
                 },
                 {
                     label: 'Neutraali',
-                    counter: 0
+                    counter: 0,
+                    sign: 0
                 },
                 {
                     label: 'Huono',
-                    counter: 0
+                    counter: 0,
+                    sign: -1
                 }
             ]
         }
