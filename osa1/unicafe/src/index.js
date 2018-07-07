@@ -13,6 +13,23 @@ const Buttons = ({feedback, clickEvent}) => (
     feedback.map(fb => <Button key={fb.label} clickEvent={clickEvent(fb.label)} label={fb.label} />)
 )
 
+const Statistics = ({ feedback }) => {
+    return (
+        <table>
+            <tbody>
+             { feedback.map(fb => <Statistic key={fb.label} name={fb.label} value={fb.counter} />) }
+            </tbody>
+        </table>
+    )
+}
+
+const Statistic = ({ name, value }) => (
+    <tr>
+        <td>{name}</td>
+        <td>{value}</td>
+    </tr>
+)
+
 class Unicafe extends React.Component {
 
     constructor(props) {
@@ -51,6 +68,7 @@ class Unicafe extends React.Component {
             <Header header="Anna palautetta" />
             <Buttons feedback={this.state.feedback} clickEvent={this.add} />
             <Header header="Statistiikka" />
+            <Statistics feedback={this.state.feedback} />
         </div>
     )
 
