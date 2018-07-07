@@ -18,7 +18,7 @@ const Statistics = ({ feedback }) => {
     let feedback_count = feedback.reduce((total, fb) => total + fb.counter, 0);
 
     if (feedback_count <= 0) {
-        stats.push(<Statistic name='Ei palautteita annettu' value='' />);
+        stats.push(<Statistic key="Nop" name='Ei palautteita annettu' value='' />);
     } else {
         stats.push(feedback.map(fb => <Statistic key={fb.label} name={fb.label} value={fb.counter} />));
 
