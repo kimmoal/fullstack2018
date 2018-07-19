@@ -8,7 +8,8 @@ class App extends React.Component {
             persons: [
                 { name: 'Arto Hellas' }
             ],
-            newName: ''
+            newName: '',
+            newNumber: ''
         }
     }
 
@@ -17,11 +18,24 @@ class App extends React.Component {
         this.setState({ newName: event.target.value })
     }
 
+    handleNumberChange = (event) => {
+        console.log(event.target.value)
+        this.setState({ newNumber: event.target.value })
+    }
+
+
     addPerson = (event) => {
         event.preventDefault()
+
+        if (this.state.persons.find( (person) => (person.name === this.state.newName ))) {
+            alert('Name already added')
+            return
+        }
+
         this.setState({ 
-            persons: this.state.persons.concat({ name: this.state.newName }),
-            newName: ''
+            persons: this.state.persons.concat({ name: this.state.newName, number: this.state.newNumber }),
+            newName: '',
+            newNumber: ''
         })
     }
 
@@ -34,12 +48,15 @@ class App extends React.Component {
                         nimi: <input value={this.state.newName} onChange={this.handleNameChange} />
                     </div>
                     <div>
+                        numero: <input value={this.state.newNumber} onChange={this.handleNumberChange} />
+                    </div>
+                    <div>
                         <button type="submit">lisää</button>
                     </div>
                 </form>
                 <h2>Numerot</h2>
                 <ul>
-                    {this.state.persons.map(person => <Person key={person.name} name={person.name} />)}
+                    {this.state.persons.map(person => <Person key={person.name} person={person} />)}
                 </ul>
             </div>
         )
