@@ -1,12 +1,26 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-const Anecdote = ({anecdote, votes}) => (
+const Anecdote = ({anecdote}) => (
     <div>
-        <h1>{anecdote}</h1>
-        <p>Votes: {votes}</p>
+        <h1>{anecdote.body}</h1>
+        <p>Votes: {anecdote.votes ? anecdote.votes : 0}</p>
     </div>
 )
+
+const MostVotedAnecdote = ({anecdote}) => {
+    if (!anecdote.votes)
+        return null
+
+    return (
+        <div>
+            <h1>Most voted anecdote: </h1>
+            <p>{anecdote.body}</p>
+            <p>has {anecdote.votes} votes</p>
+        </div>
+    )
+}
+
 
 const Button = ({clickEvent, label}) => (
     <button onClick={clickEvent}>{label}</button>
@@ -17,14 +31,15 @@ class App extends React.Component {
         super(props)
         this.state = {
             selected: 0,
-            votes: new Array(anecdotes.length).fill(0)
+            anecdotes: this.props.anecdotes
         }
     }
 
     voteAnecdote = () => {
-        const votes = [...this.state.votes];
-        votes[this.state.selected]++;
-        this.setState({ votes: votes })
+        const anecdotes = [...this.state.anecdotes];
+        let selected = anecdotes[this.state.selected]
+        selected.votes ? selected.votes++ : selected.votes = 1
+        this.setState({ anecdotes: anecdotes })
     }
 
     nextAnecdote = () => {
@@ -33,9 +48,14 @@ class App extends React.Component {
     }
 
     render() {
-        const most_votes = this.state.votes.sort(function(a, b) {
-              return a - b;
-        });
+        const most_votes = [...this.state.anecdotes].sort(function(a, b) {
+            if (isNaN(a.votes))
+                return 1
+            if (isNaN(b.votes))
+                return -1
+
+            return b.votes - a.votes;
+        })[0];
 
         return (
             <div>
@@ -44,7 +64,7 @@ class App extends React.Component {
                 />
                 <Button label="Vote" clickEvent={this.voteAnecdote} />
                 <Button label="Next anecdote" clickEvent={this.nextAnecdote} />
-                <Anecdote anecdote={most_votes} />
+                <MostVotedAnecdote anecdote={most_votes} />
             </div>
         )
     }
