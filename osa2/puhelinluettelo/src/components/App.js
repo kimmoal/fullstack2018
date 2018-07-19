@@ -1,28 +1,29 @@
 import React from 'react';
-import Person from './Person'
+import List from './List'
 
 class App extends React.Component {
     constructor(props) {
         super(props)
+
         this.state = {
             persons: [
-                { name: 'Arto Hellas' }
+                { name: 'Arto Hellas', number: '040-123456' },
+                { name: 'Martti Tienari', number: '040-123456' },
+                { name: 'Arto Järvinen', number: '040-123456' },
+                { name: 'Lea Kutvonen', number: '040-123456' }
             ],
             newName: '',
-            newNumber: ''
+            newNumber: '',
+            filter: ''
         }
     }
 
-    handleNameChange = (event) => {
-        console.log(event.target.value)
-        this.setState({ newName: event.target.value })
+    handleInputChange = (e) => {
+        let state = Object.assign({}, this.state);
+        console.log(e.target.value)
+        state[e.target.name] = e.target.value
+        this.setState(state)
     }
-
-    handleNumberChange = (event) => {
-        console.log(event.target.value)
-        this.setState({ newNumber: event.target.value })
-    }
-
 
     addPerson = (event) => {
         event.preventDefault()
@@ -43,21 +44,25 @@ class App extends React.Component {
         return (
             <div>
                 <h2>Puhelinluettelo</h2>
-                <form onSubmit={this.addPerson}>
+                rajaa näytettäviä:
+
+                <form onSubmit={this.addPerson} onChange={this.handleInputChange} >
                     <div>
-                        nimi: <input value={this.state.newName} onChange={this.handleNameChange} />
+                        <input name="filter" value={this.state.filter} />
+                    </div>
+                    <h2>Lisää uusi</h2>
+                    <div>
+                        nimi: <input name="newName" value={this.state.newName} />
                     </div>
                     <div>
-                        numero: <input value={this.state.newNumber} onChange={this.handleNumberChange} />
+                        numero: <input name="newNumber" value={this.state.newNumber} />
                     </div>
                     <div>
                         <button type="submit">lisää</button>
                     </div>
                 </form>
                 <h2>Numerot</h2>
-                <ul>
-                    {this.state.persons.map(person => <Person key={person.name} person={person} />)}
-                </ul>
+                <List persons={this.state.persons} filter={this.state.filter} />
             </div>
         )
     }
